@@ -34,7 +34,7 @@ public class UserService {
 
         Set<Role> roles = new HashSet<>();
         if (registerRequest.getRoles() == null || registerRequest.getRoles().isEmpty()) {
-            roles.add(Role.ROLE_BORROWER); // Роль по умолчанию
+            roles.add(Role.ROLE_BORROWER);
         } else {
             for (String roleStr : registerRequest.getRoles()) {
                 try {
