@@ -15,11 +15,16 @@ import java.util.List;
 @Service
 public class LenderOfferService {
 
-    @Autowired
-    private LenderOfferRepository lenderOfferRepository;
+    private final LenderOfferRepository lenderOfferRepository;
+    private final UserRepository userRepository;
+    private final LogService logService; // Инъекция LogService
 
     @Autowired
-    private UserRepository userRepository;
+    public LenderOfferService(LenderOfferRepository lenderOfferRepository, UserRepository userRepository, LogService logService) {
+        this.lenderOfferRepository = lenderOfferRepository;
+        this.userRepository = userRepository;
+        this.logService = logService;
+    }
 
     public LendingOffer createLenderOffer(User lender, LenderOfferRequest offerRequest) {
         LendingOffer offer = new LendingOffer();
@@ -30,10 +35,16 @@ public class LenderOfferService {
         offer.setCreatedAt(LocalDateTime.now());
         offer.setLender(lender);
 
-        return lenderOfferRepository.save(offer);
+        LendingOffer savedOffer = lenderOfferRepository.save(offer);
+
+        logService.log("INFO", "LenderOfferService", "Новое предложение создано: ID=" + savedOffer.getId() + " от Лендера=" + lender.getNickname(), Thread.currentThread().getName());
+
+        return savedOffer;
     }
 
     public List<LendingOffer> getActiveLenderOffers() {
-        return lenderOfferRepository.findByStatus(OfferStatus.ACTIVE);
+        List<LendingOffer> activeOffers = lenderOfferRepository.findByStatus(OfferStatus.ACTIVE);
+        logService.log("INFO", "LenderOfferService", "Получено " + activeOffers.size() + " активных предложений от лендера.", Thread.currentThread().getName());
+        return activeOffers;
     }
 }

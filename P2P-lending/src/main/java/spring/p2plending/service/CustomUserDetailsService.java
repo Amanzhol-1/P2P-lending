@@ -10,15 +10,27 @@ import spring.p2plending.security.CustomUserDetails;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private final UserRepository userRepository;
+    private final LogService logService; // Инъекция LogService
+
     @Autowired
-    private UserRepository userRepository;
+    public CustomUserDetailsService(UserRepository userRepository, LogService logService) {
+        this.userRepository = userRepository;
+        this.logService = logService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
-        User user = userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with nickname: " + nickname));
+        try {
+            User user = userRepository.findByNickname(nickname)
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found with nickname: " + nickname));
 
-        return new CustomUserDetails(user);
+            logService.log("INFO", "CustomUserDetailsService", "Пользователь аутентифицирован: " + nickname, Thread.currentThread().getName());
+
+            return new CustomUserDetails(user);
+        } catch (UsernameNotFoundException e) {
+            logService.log("WARN", "CustomUserDetailsService", "Не удалось найти пользователя: " + nickname, Thread.currentThread().getName(), e.toString());
+            throw e;
+        }
     }
 }
-
