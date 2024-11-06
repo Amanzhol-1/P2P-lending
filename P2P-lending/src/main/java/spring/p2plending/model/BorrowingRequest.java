@@ -36,5 +36,9 @@ public class BorrowingRequest {
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestStatus status = RequestStatus.OPEN;
+
+    @ManyToOne
+    @JoinColumn(name = "matched_offer_id")
+    private LendingOffer matchedOffer;
 }
 

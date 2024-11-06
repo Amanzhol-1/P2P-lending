@@ -1,5 +1,6 @@
 package spring.p2plending.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import spring.p2plending.enums.Role;
 import spring.p2plending.model.User;
 import spring.p2plending.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -60,6 +62,14 @@ public class UserService {
         logService.log("INFO", "UserService", "Новый пользователь зарегистрирован: " + savedUser.getNickname(), Thread.currentThread().getName());
 
         return savedUser;
+    }
+
+    @Transactional
+    public void updateUserBalance(User user, BigDecimal amount) {
+        user.setBalance(user.getBalance().add(amount));
+        userRepository.save(user);
+
+        logService.log("INFO", "UserService", "Баланс пользователя " + user.getNickname() + " обновлен на " + amount, Thread.currentThread().getName());
     }
 
     public Optional<User> findByNickname(String nickname) {

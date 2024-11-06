@@ -11,7 +11,7 @@ import spring.p2plending.security.CustomUserDetails;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final LogService logService; // Инъекция LogService
+    private final LogService logService;
 
     @Autowired
     public CustomUserDetailsService(UserRepository userRepository, LogService logService) {

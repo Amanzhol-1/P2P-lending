@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import spring.p2plending.enums.Role;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,9 @@ public class User {
 
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
+
+    @Column(name = "balance", nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
