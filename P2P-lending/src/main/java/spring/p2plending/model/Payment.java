@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "payments")
 @Data
 @ToString
-public class Payment {
+public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

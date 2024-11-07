@@ -7,12 +7,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.annotation.web.builders.*;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import spring.p2plending.security.*;
 import spring.p2plending.service.CustomUserDetailsService;
 
@@ -26,26 +27,22 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
-    // Фильтр для обработки jwt
     @Bean
     public JwtAuthenticationFilter authenticationJwtTokenFilter() {
         return new JwtAuthenticationFilter();
     }
 
-    // для контроллера
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Конфиг PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Настройка AuthenticationProvider с CustomUserDetailsService
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -56,7 +53,6 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // основа
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -65,7 +61,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(unauthorizedHandler)
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Изменено с STATELESS
                 )
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
@@ -73,9 +69,17 @@ public class SecurityConfig {
                 )
                 .authenticationProvider(authenticationProvider());
 
+        // Добавляем JWT фильтр перед UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+    // Регистрация HttpSessionEventPublisher для обработки событий сессий
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 }
+
 

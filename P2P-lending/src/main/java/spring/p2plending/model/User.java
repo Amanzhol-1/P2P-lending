@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import spring.p2plending.enums.Role;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Table(name = "users")
 @Data
 @ToString
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

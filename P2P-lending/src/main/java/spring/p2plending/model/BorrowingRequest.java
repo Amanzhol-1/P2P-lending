@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import spring.p2plending.enums.RequestStatus;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "borrowing_requests")
 @Data
 @ToString
-public class BorrowingRequest {
+public class BorrowingRequest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

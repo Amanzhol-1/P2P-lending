@@ -126,6 +126,25 @@
             <version>3.0.2</version>
         </dependency>
 
+        <!-- Зависимость для Spring Session Data Redis -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+        <!-- Зависимость для клиента Redis -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+
+        <!-- Зависимость для драйвера Redis (Lettuce или Jedis) -->
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>

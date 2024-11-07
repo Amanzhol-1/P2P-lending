@@ -7,12 +7,14 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
 @Document(collection = "logs")
 @Data
-public class LogEntry {
+public class LogEntry implements Serializable {
 
     @Id
     private String id;
