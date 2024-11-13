@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "lender_offers")
 @Data
-@ToString
 public class LendingOffer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

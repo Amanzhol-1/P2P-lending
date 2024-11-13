@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "borrowing_requests")
 @Data
-@ToString
 public class BorrowingRequest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

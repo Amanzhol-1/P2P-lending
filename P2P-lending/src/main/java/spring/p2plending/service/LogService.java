@@ -32,7 +32,6 @@ public class LogService {
     }
 
     @Async
-    // Перегруженный метод для логирования без исключения
     public void log(String level, String logger, String message, String thread) {
         log(level, logger, message, thread, null);
     }

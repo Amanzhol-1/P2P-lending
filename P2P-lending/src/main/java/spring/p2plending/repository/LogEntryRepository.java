@@ -6,6 +6,5 @@ import spring.p2plending.model.LogEntry;
 
 @Repository
 public interface LogEntryRepository extends MongoRepository<LogEntry, String> {
-    // Дополнительные методы поиска можно добавить здесь
 }
 
