@@ -34,11 +34,12 @@ public class UserService {
             throw new RuntimeException("Nickname is already taken!");
         }
 
-        User user = new User();
-        user.setNickname(registerRequest.getNickname());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        user.setFirstName(registerRequest.getFirstName());
-        user.setLastName(registerRequest.getLastName());
+        User user = User.builder()
+                .nickname(registerRequest.getNickname())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .firstName(registerRequest.getFirstName())
+                .lastName(registerRequest.getLastName())
+                .build();
 
         Set<Role> roles = new HashSet<>();
         if (registerRequest.getRoles() == null || registerRequest.getRoles().isEmpty()) {

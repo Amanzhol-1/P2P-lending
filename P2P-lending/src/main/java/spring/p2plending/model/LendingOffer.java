@@ -1,8 +1,7 @@
 package spring.p2plending.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import spring.p2plending.enums.OfferStatus;
 
 import java.io.Serializable;
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "lender_offers")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class LendingOffer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

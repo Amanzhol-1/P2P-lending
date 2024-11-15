@@ -19,13 +19,11 @@ public class JwtUtils {
     @Value("${spring.p2plending.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    // Метод для получения ключа подписи
     private Key getSigningKey() {
         byte[] keyBytes = jwtSecret.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // Генерация jwt токена
     public String generateJwtToken(CustomUserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername()) // Используем nickname как subject
@@ -35,7 +33,6 @@ public class JwtUtils {
                 .compact();
     }
 
-    // Получение nickname из JWT токена
     public String getNicknameFromJwtToken(String token) {
         return Jwts.parser()
                 .setSigningKey(getSigningKey()) // Устанавливаем ключ подписи
@@ -45,7 +42,6 @@ public class JwtUtils {
                 .getSubject(); // Получаем subject
     }
 
-    // Валидация JWT токена
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser()

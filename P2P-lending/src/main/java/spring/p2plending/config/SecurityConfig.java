@@ -69,7 +69,6 @@ public class SecurityConfig {
                 )
                 .authenticationProvider(authenticationProvider());
 
-        // Добавляем JWT фильтр перед UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

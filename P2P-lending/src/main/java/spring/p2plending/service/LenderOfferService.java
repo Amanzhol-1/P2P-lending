@@ -39,13 +39,15 @@ public class LenderOfferService {
     }
 
     public LendingOffer createLenderOffer(User lender, LenderOfferRequest offerRequest) {
-        LendingOffer offer = new LendingOffer();
-        offer.setAmount(offerRequest.getAmount());
-        offer.setInterestRate(offerRequest.getInterestRate());
-        offer.setTermInMonths(offerRequest.getTermInMonths());
-        offer.setStatus(OfferStatus.ACTIVE);
-        offer.setCreatedAt(LocalDateTime.now());
-        offer.setLender(lender);
+
+        LendingOffer offer = LendingOffer.builder()
+                .amount(offerRequest.getAmount())
+                .interestRate(offerRequest.getInterestRate())
+                .termInMonths(offerRequest.getTermInMonths())
+                .status(OfferStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .lender(lender)
+                .build();
 
         LendingOffer savedOffer = lenderOfferRepository.save(offer);
 
@@ -76,15 +78,16 @@ public class LenderOfferService {
         offer.setStatus(OfferStatus.ACCEPTED);
         lenderOfferRepository.save(offer);
 
-        Loan loan = new Loan();
-        loan.setBorrower(borrower);
-        loan.setLender(offer.getLender());
-        loan.setAmount(offer.getAmount());
-        loan.setInterestRate(offer.getInterestRate());
-        loan.setTermInMonths(offer.getTermInMonths());
-        loan.setStartDate(LocalDateTime.now());
-        loan.setEndDate(LocalDateTime.now().plusMonths(offer.getTermInMonths()));
-        loan.setStatus(LoanStatus.ACTIVE);
+        Loan loan = Loan.builder()
+                .borrower(borrower)
+                .lender(offer.getLender())
+                .amount(offer.getAmount())
+                .interestRate(offer.getInterestRate())
+                .termInMonths(offer.getTermInMonths())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusMonths(offer.getTermInMonths()))
+                .status(LoanStatus.ACTIVE)
+                .build();
 
         Loan savedLoan = loanRepository.save(loan);
 

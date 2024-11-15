@@ -53,12 +53,13 @@ public class PaymentService {
             BigDecimal interestAmount = loanAmount.multiply(monthlyInterestRate);
             BigDecimal principalAmount = monthlyPaymentAmount.subtract(interestAmount);
 
-            Payment payment = new Payment();
-            payment.setLoan(loan);
-            payment.setPaymentDate(paymentDate);
-            payment.setAmount(monthlyPaymentAmount);
-            payment.setInterestAmount(interestAmount);
-            payment.setPrincipalAmount(principalAmount);
+            Payment payment = Payment.builder()
+                    .loan(loan)
+                    .paymentDate(paymentDate)
+                    .amount(monthlyPaymentAmount)
+                    .interestAmount(interestAmount)
+                    .principalAmount(principalAmount)
+                    .build();
 
             paymentSchedule.add(payment);
 

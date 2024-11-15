@@ -20,14 +20,14 @@ public class LogService {
 
     @Async
     public void log(String level, String logger, String message, String thread, String exception) {
-        LogEntry logEntry = new LogEntry(
-                LocalDateTime.now(),
-                level,
-                logger,
-                message,
-                thread,
-                exception
-        );
+        LogEntry logEntry = LogEntry.builder()
+                .timestamp(LocalDateTime.now())
+                .level(level)
+                .logger(logger)
+                .message(message)
+                .thread(thread)
+                .exception(exception)
+                .build();
         logEntryRepository.save(logEntry);
     }
 

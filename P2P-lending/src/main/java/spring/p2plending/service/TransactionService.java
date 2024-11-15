@@ -27,13 +27,14 @@ public class TransactionService {
         userService.updateUserBalance(fromUser, amount.negate());
         userService.updateUserBalance(toUser, amount);
 
-        Transaction transaction = new Transaction();
-        transaction.setLoan(loan);
-        transaction.setFromUser(fromUser);
-        transaction.setToUser(toUser);
-        transaction.setAmount(amount);
-        transaction.setTransactionDate(LocalDateTime.now());
-        transaction.setTransactionType(type);
+        Transaction transaction = Transaction.builder()
+                .loan(loan)
+                .fromUser(fromUser)
+                .toUser(toUser)
+                .amount(amount)
+                .transactionDate(LocalDateTime.now())
+                .transactionType(type)
+                .build();
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 

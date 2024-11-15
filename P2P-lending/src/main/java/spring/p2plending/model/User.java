@@ -1,8 +1,10 @@
 package spring.p2plending.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import spring.p2plending.enums.Role;
 
 import java.io.Serializable;
@@ -13,6 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +36,7 @@ public class User implements Serializable {
     private String lastName;
 
     @Column(name = "balance", nullable = false)
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
     @ElementCollection(fetch = FetchType.EAGER)

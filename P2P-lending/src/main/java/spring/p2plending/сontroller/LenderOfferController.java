@@ -52,15 +52,18 @@ public class LenderOfferController {
 
     // Метод для конвертации LenderOffer в LenderOfferResponse
     private LenderOfferResponse convertToResponse(LendingOffer offer) {
-        LenderOfferResponse response = new LenderOfferResponse();
-        response.setId(offer.getId());
-        response.setAmount(offer.getAmount());
-        response.setInterestRate(offer.getInterestRate());
-        response.setTermInMonths(offer.getTermInMonths());
-        response.setStatus(offer.getStatus());
-        response.setCreatedAt(offer.getCreatedAt());
-        response.setLenderId(offer.getLender().getId());
-        response.setLenderNickname(offer.getLender().getNickname());
+
+        LenderOfferResponse response = LenderOfferResponse.builder()
+                .id(offer.getId())
+                .amount(offer.getAmount())
+                .interestRate(offer.getInterestRate())
+                .termInMonths(offer.getTermInMonths())
+                .status(offer.getStatus())
+                .createdAt(offer.getCreatedAt())
+                .lenderId(offer.getLender().getId())
+                .lenderNickname(offer.getLender().getNickname())
+                .build();
+
         return response;
     }
 }

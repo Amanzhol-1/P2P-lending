@@ -1,8 +1,7 @@
 package spring.p2plending.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import spring.p2plending.enums.TransactionType;
 
 import java.io.Serializable;
@@ -12,6 +11,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "transactions")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Transaction implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

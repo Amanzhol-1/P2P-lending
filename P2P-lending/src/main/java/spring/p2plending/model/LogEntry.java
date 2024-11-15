@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,6 +15,9 @@ import java.time.LocalDateTime;
 
 @Document(collection = "logs")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class LogEntry implements Serializable {
 
     @Id
@@ -35,14 +39,5 @@ public class LogEntry implements Serializable {
     private String thread;
 
     private String exception;
-
-    public LogEntry(LocalDateTime timestamp, String level, String logger, String message, String thread, String exception) {
-        this.timestamp = timestamp;
-        this.level = level;
-        this.logger = logger;
-        this.message = message;
-        this.thread = thread;
-        this.exception = exception;
-    }
 }
 

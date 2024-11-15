@@ -9,7 +9,6 @@ import spring.p2plending.enums.TransactionType;
 import spring.p2plending.model.*;
 import spring.p2plending.repository.*;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,16 +46,16 @@ public class LoanService {
         offer.setStatus(OfferStatus.ACCEPTED);
         lenderOfferRepository.save(offer);
 
-        // Создаем кредит
-        Loan loan = new Loan();
-        loan.setBorrower(request.getBorrower());
-        loan.setLender(offer.getLender());
-        loan.setAmount(offer.getAmount());
-        loan.setInterestRate(offer.getInterestRate());
-        loan.setTermInMonths(offer.getTermInMonths());
-        loan.setStartDate(LocalDateTime.now());
-        loan.setEndDate(LocalDateTime.now().plusMonths(offer.getTermInMonths()));
-        loan.setStatus(LoanStatus.ACTIVE);
+        Loan loan = Loan.builder()
+                .borrower(request.getBorrower())
+                .lender(offer.getLender())
+                .amount(offer.getAmount())
+                .interestRate(offer.getInterestRate())
+                .termInMonths(offer.getTermInMonths())
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusMonths(offer.getTermInMonths()))
+                .status(LoanStatus.ACTIVE)
+                .build();
 
         Loan savedLoan = loanRepository.save(loan);
 

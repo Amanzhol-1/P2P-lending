@@ -1,8 +1,7 @@
 package spring.p2plending.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -11,6 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "payments")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Payment implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,5 +35,6 @@ public class Payment implements Serializable {
     private BigDecimal principalAmount;
 
     @Column(name = "is_paid", nullable = false)
+    @Builder.Default
     private Boolean isPaid = false;
 }
