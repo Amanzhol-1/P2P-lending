@@ -25,7 +25,7 @@ The P2P Lending Platform is a service developed using Spring Boot, designed to f
 - **Session Management**: Efficient session handling using Redis to improve performance and scalability.
 - **Reports**: Provision of reports to lenders and borrowers on loan statuses and earnings.
 
-# API Endpoints Documentation
+## API Endpoints Documentation
 
 ## 1. Authentication API
 
