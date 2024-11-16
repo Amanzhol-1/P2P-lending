@@ -1,5 +1,3 @@
-<img width="939" alt="image" src="https://github.com/user-attachments/assets/939f919f-9bce-4340-b76c-50e9b8b1bc6e"># P2P Lending Platform
-
 ## Description
 The P2P Lending Platform is a service developed using Spring Boot, designed to facilitate peer-to-peer lending by allowing users to act as both borrowers and lenders. Users can create loan requests with specified amounts, terms, and interest rates. Borrowers can submit requests for funding, while lenders can browse, filter, and select loans to invest in. Each loan agreement is processed as a transaction, and the system automatically calculates repayment schedules and notifies borrowers of upcoming payments. The platform provides reports to both lenders and borrowers on the current status of loans and earnings, making the lending process transparent and secure.
 
