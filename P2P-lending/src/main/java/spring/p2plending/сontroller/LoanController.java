@@ -1,5 +1,10 @@
 package spring.p2plending.сontroller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +29,16 @@ public class LoanController {
         this.userService = userService;
     }
 
-    // Эндпоинт для заемщика, чтобы принять предложение кредитора
+    @Operation(summary = "Accept a lender offer to create a loan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loan created successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid offer ID or offer inactive",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access",
+                    content = @Content)
+    })
     @PostMapping("/accept-offer/{offerId}")
     @PreAuthorize("hasRole('ROLE_BORROWER')")
     public ResponseEntity<?> acceptLenderOffer(@PathVariable Long offerId, Authentication authentication) {

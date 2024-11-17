@@ -1,5 +1,11 @@
 package spring.p2plending.сontroller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +32,16 @@ public class LenderOfferController {
     @Autowired
     private UserService userService;
 
-    // Эндпоинт для создания предложения (только для кредиторов)
+    @Operation(summary = "Create a new lender offer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lender offer created successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LenderOfferResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input data",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access",
+                    content = @Content)
+    })
     @PostMapping
     @PreAuthorize("hasRole('ROLE_LENDER')")
     public ResponseEntity<?> createLenderOffer(@RequestBody LenderOfferRequest offerRequest,
@@ -39,7 +54,16 @@ public class LenderOfferController {
         return ResponseEntity.ok(convertToResponse(offer));
     }
 
-    // Эндпоинт для получения списка активных предложений (доступно всем аутентифицированным пользователям)
+    @Operation(summary = "Get all active lender offers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of active lender offers",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = LenderOfferResponse.class)))),
+            @ApiResponse(responseCode = "204", description = "No active offers found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized access",
+                    content = @Content)
+    })
     @GetMapping("/active")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getActiveLenderOffers() {
@@ -50,7 +74,6 @@ public class LenderOfferController {
         return ResponseEntity.ok(responses);
     }
 
-    // Метод для конвертации LenderOffer в LenderOfferResponse
     private LenderOfferResponse convertToResponse(LendingOffer offer) {
 
         LenderOfferResponse response = LenderOfferResponse.builder()

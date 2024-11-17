@@ -1,5 +1,10 @@
 package spring.p2plending.сontroller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
@@ -25,6 +30,13 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Operation(summary = "Register a new user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User registered successfully",
+                    content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input data",
+                    content = @Content)
+    })
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Validated @RequestBody RegisterRequest registerRequest) {
         try {
@@ -35,6 +47,14 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Authenticate a user and obtain JWT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authentication successful",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials",
+                    content = @Content)
+    })
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
         try {
