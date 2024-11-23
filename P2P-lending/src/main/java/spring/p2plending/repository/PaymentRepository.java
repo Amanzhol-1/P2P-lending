@@ -12,4 +12,5 @@ import java.util.List;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByLoan(Loan loan);
     List<Payment> findByIsPaidFalseAndPaymentDateBefore(LocalDateTime dateTime);
+    List<Payment> findByIsPaidFalseAndPaymentDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

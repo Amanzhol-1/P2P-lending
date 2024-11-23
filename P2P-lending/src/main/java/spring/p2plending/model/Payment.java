@@ -34,6 +34,9 @@ public class Payment implements Serializable {
     @Column(name = "principal_amount", nullable = false)
     private BigDecimal principalAmount;
 
+    @Column(name = "notification_sent")
+    private boolean notificationSent = false;
+
     @Column(name = "is_paid", nullable = false)
     @Builder.Default
     private Boolean isPaid = false;
