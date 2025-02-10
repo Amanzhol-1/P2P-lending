@@ -2,18 +2,18 @@ package spring.p2plending.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import spring.p2plending.enums.TransactionType;
+import spring.p2plending.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "orders")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,16 +21,16 @@ public class Transaction {
     @Column(nullable = false)
     private Long accountId;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type;
+    private Long productId;
 
     @Column(nullable = false)
-    private BigDecimal amount;
+    private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
 
     @Column(nullable = false)
     private LocalDateTime timestamp;
-
-    private String description;
 }
-

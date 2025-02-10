@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: p2p-lending-app
+    # Маппим порт приложения 8081 контейнера наружу на 8080 хоста
+    ports:
+      - "8082:8081"
+    depends_on:
+      - db
+      - redis
+      - zookeeper
+      - kafka
+      - mongo
+    environment:
+      # Настройка подключения к БД
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/FinanceFlowTracker
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123
+
+      # Kafka Configuration
+      - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:9092
+      - SPRING_KAFKA_TOPIC_PAYMENT-UPCOMING=PAYMENT_UPCOMING
+
+      # MongoDB Configuration
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/logsdb
+
+      # Redis Configuration
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+
+      # Остальные параметры из application.properties по необходимости можно переопределить
+      # если требуется, или оставить значения по умолчанию.
+
+      # Перепишем параметр для Flyway, чтобы точно применились миграции
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_LOCATIONS=classpath:db/migration
+    networks:
+      - app-network
+
+  db:
+    image: postgres:14
+    container_name: p2p-lending-db
+    environment:
+      - POSTGRES_DB=FinanceFlowTracker
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+    ports:
+      - "5435:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7
+    container_name: p2p-lending-redis
+    ports:
+      - "63799:6379"
+    networks:
+      - app-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: p2p-lending-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "22181:2181"
+    networks:
+      - app-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: p2p-lending-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    ports:
+      - "9093:9093"
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:6
+    container_name: p2p-lending-mongo
+    environment:
+      MONGO_INITDB_DATABASE: logsdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+  mongo_data:
+
+networks:
+  app-network:

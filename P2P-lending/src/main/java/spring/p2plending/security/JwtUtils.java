@@ -26,28 +26,28 @@ public class JwtUtils {
 
     public String generateJwtToken(CustomUserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername()) // Используем nickname как subject
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512) // Указываем ключ и алгоритм
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public String getNicknameFromJwtToken(String token) {
         return Jwts.parser()
-                .setSigningKey(getSigningKey()) // Устанавливаем ключ подписи
+                .setSigningKey(getSigningKey())
                 .build()
-                .parseClaimsJws(token) // Парсим токен
+                .parseClaimsJws(token)
                 .getBody()
-                .getSubject(); // Получаем subject
+                .getSubject();
     }
 
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser()
-                    .setSigningKey(getSigningKey()) // Устанавливаем ключ подписи
+                    .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(authToken); // Парсим токен
+                    .parseClaimsJws(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             System.err.println("Invalid JWT token: " + e.getMessage());

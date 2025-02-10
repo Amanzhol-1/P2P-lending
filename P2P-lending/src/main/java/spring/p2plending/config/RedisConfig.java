@@ -1,15 +1,13 @@
 package spring.p2plending.config;
 
-import org.springframework.context.annotation.*;
-import org.springframework.data.redis.connection.*;
-import org.springframework.data.redis.connection.lettuce.*;
-import org.springframework.data.redis.core.*;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.*;
 
 @Configuration
-@EnableRedisHttpSession
 public class RedisConfig {
 
     @Bean
@@ -22,16 +20,12 @@ public class RedisConfig {
     public RedisTemplate<Object, Object> redisTemplate() {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
-
-        // Настройка сериализаторов для ключей и значений
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer();
         StringRedisSerializer stringSerializer = new StringRedisSerializer();
-
         template.setKeySerializer(stringSerializer);
         template.setValueSerializer(serializer);
         template.setHashKeySerializer(stringSerializer);
         template.setHashValueSerializer(serializer);
-
         return template;
     }
 }

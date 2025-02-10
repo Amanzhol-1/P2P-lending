@@ -1,45 +1,82 @@
 package spring.p2plending.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import spring.p2plending.dto.TransactionRequestDTO;
+import spring.p2plending.dto.TransactionResponseDTO;
+import spring.p2plending.enums.AccountStatus;
 import spring.p2plending.enums.TransactionType;
-import spring.p2plending.model.*;
+import spring.p2plending.exception.AccountBlockedException;
+import spring.p2plending.exception.InsufficientFundsException;
+import spring.p2plending.model.Transaction;
 import spring.p2plending.repository.TransactionRepository;
+import spring.p2plending.model.Account;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final UserService userService;
-    private final LogService logService;
+    private final AccountService accountService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    public TransactionService(TransactionRepository transactionRepository, UserService userService, LogService logService) {
-        this.transactionRepository = transactionRepository;
-        this.userService = userService;
-        this.logService = logService;
-    }
+    private static final String TRANSACTION_TOPIC = "transactions_topic";
 
-    public Transaction createTransaction(Loan loan, User fromUser, User toUser, BigDecimal amount, TransactionType type) {
-        userService.updateUserBalance(fromUser, amount.negate());
-        userService.updateUserBalance(toUser, amount);
+    @Transactional
+    public TransactionResponseDTO createTransaction(TransactionRequestDTO transactionRequest) {
 
-        Transaction transaction = Transaction.builder()
-                .loan(loan)
-                .fromUser(fromUser)
-                .toUser(toUser)
+        Account account = accountService.getAccountEntity(transactionRequest.getAccountId());
+
+        if (account.getStatus() == AccountStatus.BLOCKED) {
+            throw new AccountBlockedException("Account is blocked, can't perform transactions");
+        }
+
+        if (transactionRequest.getType() == null) transactionRequest.setType(TransactionType.DEBIT);
+
+        BigDecimal amount = transactionRequest.getAmount();
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Transaction amount must be positive");
+        }
+
+        if (transactionRequest.getType() == TransactionType.DEBIT) {
+            if (account.getBalance().compareTo(amount) < 0) {
+                throw new InsufficientFundsException("Insufficient funds");
+            }
+            account.setBalance(account.getBalance().subtract(amount));
+        } else {
+            account.setBalance(account.getBalance().add(amount));
+        }
+
+        accountService.saveAccountEntity(account);
+
+        Transaction tx = Transaction.builder()
+                .accountId(transactionRequest.getAccountId())
+                .type(transactionRequest.getType())
                 .amount(amount)
-                .transactionDate(LocalDateTime.now())
-                .transactionType(type)
+                .timestamp(LocalDateTime.now())
+                .description(transactionRequest.getDescription())
                 .build();
 
-        Transaction savedTransaction = transactionRepository.save(transaction);
+        Transaction saved = transactionRepository.save(tx);
 
-        logService.log("INFO", "TransactionService", "Создана транзакция: ID=" + savedTransaction.getId() + ", Тип=" + type, Thread.currentThread().getName());
+        kafkaTemplate.send(TRANSACTION_TOPIC, "Transaction created: " + saved.getId());
 
-        return savedTransaction;
+        return mapToResponseDTO(saved);
+    }
+
+    private TransactionResponseDTO mapToResponseDTO(Transaction tx) {
+        return TransactionResponseDTO.builder()
+                .id(tx.getId())
+                .accountId(tx.getAccountId())
+                .type(tx.getType())
+                .amount(tx.getAmount())
+                .timestamp(tx.getTimestamp())
+                .description(tx.getDescription())
+                .build();
     }
 }

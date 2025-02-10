@@ -2,8 +2,7 @@ package spring.p2plending.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import spring.p2plending.model.Transaction;
+import spring.p2plending.model.Account;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> { }
-
+public interface AccountRepository extends JpaRepository<Account, Long> { }

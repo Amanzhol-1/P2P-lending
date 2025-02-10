@@ -1,20 +1,24 @@
 package spring.p2plending.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
-import java.io.Serializable;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "outbox_event")
+@Table(name = "outbox_events")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class OutboxEvent implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class OutboxEvent {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @Column(name = "aggregate_id", nullable = false)
@@ -30,5 +34,6 @@ public class OutboxEvent implements Serializable {
     private LocalDateTime createdAt;
 
     @Column(name = "processed", nullable = false)
-    private boolean processed = false;
+    private boolean processed;
 }
+
