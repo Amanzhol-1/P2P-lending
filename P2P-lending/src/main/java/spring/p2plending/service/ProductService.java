@@ -26,7 +26,6 @@ public class ProductService {
      * Теперь напрямую вызываем findByAvailableTrue().
      * Если в таблице 100 тысяч записей, а «available = true» только у 100, то мы получаем только эти 100
      * Это существенно повышает производительность и снижает потребление памяти
-     * @Cacheable – кэшируем результат.
      */
     @Cacheable(value = "activeProducts")
     public List<ProductResponseDTO> getActiveProducts() {
@@ -35,9 +34,6 @@ public class ProductService {
     }
 
     /**
-     * Создание нового продукта. Здесь есть запись в БД,
-     * значит ставим @Transactional (если планируем несколько операций,
-     * которые должны быть атомарными).
      * Дополнительно можно добавить @CacheEvict, чтобы сбрасывать кэш
      * 'activeProducts', если меняется состояние продукта.
      */

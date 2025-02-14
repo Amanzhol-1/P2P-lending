@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
-    // Дополнительно можно хранить баланс в аккаунте пользователя
+    // в аккаунте ( исправить )
     @Column(nullable = false)
     private BigDecimal balance;
 

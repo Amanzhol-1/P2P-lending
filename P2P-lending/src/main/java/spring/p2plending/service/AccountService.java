@@ -34,20 +34,12 @@ public class AccountService {
         return mapToResponseDTO(updated);
     }
 
-    /**
-     * Возвращает саму сущность Account по id (не DTO).
-     * Делается @Transactional(readOnly = true), т.к. это только чтение.
-     */
     @Transactional(readOnly = true)
     public Account getAccountEntity(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found"));
     }
 
-    /**
-     * Сохраняет уже изменённый Account (например, после изменения баланса).
-     * Считается @Transactional, потому что мы делаем запись.
-     */
     @Transactional
     public Account saveAccountEntity(Account account) {
         return accountRepository.save(account);

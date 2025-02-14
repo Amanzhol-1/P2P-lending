@@ -22,6 +22,14 @@ public class KafkaConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+
+        configProps.put(ProducerConfig.ACKS_CONFIG, "all"); // Дожидаемся подтверждения от всех реплик
+        configProps.put(ProducerConfig.RETRIES_CONFIG, 3); // Количество повторных попыток
+        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true); // Гарантирует exactly-once семантику
+        configProps.put(ProducerConfig.LINGER_MS_CONFIG, 10); // Небольшая задержка для формирования батча
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384); // Размер батча в байтах (например, 16 КБ)
+        configProps.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy"); // Используем компрессию для уменьшения объёма данных
+
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 

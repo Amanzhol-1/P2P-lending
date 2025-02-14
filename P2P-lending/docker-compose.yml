@@ -4,7 +4,6 @@ services:
   app:
     build: .
     container_name: p2p-lending-app
-    # Маппим порт приложения 8081 контейнера наружу на 8080 хоста
     ports:
       - "8082:8081"
     depends_on:
@@ -14,26 +13,18 @@ services:
       - kafka
       - mongo
     environment:
-      # Настройка подключения к БД
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/FinanceFlowTracker
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123
 
-      # Kafka Configuration
       - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:9092
       - SPRING_KAFKA_TOPIC_PAYMENT-UPCOMING=PAYMENT_UPCOMING
 
-      # MongoDB Configuration
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/logsdb
 
-      # Redis Configuration
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
 
-      # Остальные параметры из application.properties по необходимости можно переопределить
-      # если требуется, или оставить значения по умолчанию.
-
-      # Перепишем параметр для Flyway, чтобы точно применились миграции
       - SPRING_FLYWAY_ENABLED=true
       - SPRING_FLYWAY_LOCATIONS=classpath:db/migration
     networks:
